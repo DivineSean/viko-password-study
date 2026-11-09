@@ -2,162 +2,433 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
 <title>Creating passwords for new accounts</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%230071e3'/%3E%3Cpath d='M22 29v-5a10 10 0 0 1 20 0v5' fill='none' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3Crect x='16' y='29' width='32' height='22' rx='5' fill='white'/%3E%3C/svg%3E">
 <style>
   :root {
-    --bg: #f4f3ef; --card: #ffffff; --ink: #1c2230; --muted: #596273;
-    --accent: #1f4e8c; --accent-ink: #ffffff; --line: #d7dae1; --err: #a12a2a; --note: #fff7e0;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --text: #1d1d1f;
+    --text-2: #6e6e73;
+    --accent: #0071e3;
+    --accent-press: #0062c4;
+    --accent-text: #0066cc;
+    --ring: rgba(0, 113, 227, .32);
+    --line: rgba(60, 60, 67, .14);
+    --line-strong: rgba(60, 60, 67, .26);
+    --window: rgba(246, 246, 248, .80);
+    --window-solid: #f5f5f7;
+    --window-edge: rgba(255, 255, 255, .55);
+    --titlebar: rgba(232, 232, 237, .72);
+    --group: rgba(255, 255, 255, .82);
+    --field: #ffffff;
+    --sheet: #ffffff;
+    --hover: rgba(0, 0, 0, .035);
+    --danger: #c4312b;
+    --shadow: 0 32px 90px rgba(10, 20, 40, .30), 0 2px 8px rgba(10, 20, 40, .14);
+    --wall-a: #6fa8dc;
+    --wall-b: #f2b880;
+    --wall-c: #2f5d8a;
+    --wall-d: #152a46;
+    --ease: cubic-bezier(.4, 0, .2, 1);
+    --ease-in: cubic-bezier(0, 0, .2, 1);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #12151b; --card: #1b1f27; --ink: #e7e9ee; --muted: #a2aab8;
-      --accent: #8ab4ff; --accent-ink: #0d1420; --line: #323946; --err: #ff9a9a; --note: #2a2618;
+      --text: #f5f5f7;
+      --text-2: #a1a1a6;
+      --accent-text: #4da3ff;
+      --ring: rgba(77, 163, 255, .42);
+      --line: rgba(255, 255, 255, .10);
+      --line-strong: rgba(255, 255, 255, .20);
+      --window: rgba(32, 32, 36, .78);
+      --window-solid: #1f1f23;
+      --window-edge: rgba(255, 255, 255, .10);
+      --titlebar: rgba(48, 48, 54, .72);
+      --group: rgba(255, 255, 255, .055);
+      --field: rgba(255, 255, 255, .07);
+      --sheet: rgba(255, 255, 255, .06);
+      --hover: rgba(255, 255, 255, .04);
+      --danger: #ff8a80;
+      --shadow: 0 32px 90px rgba(0, 0, 0, .60), 0 2px 8px rgba(0, 0, 0, .45);
+      --wall-a: #1f4f7a;
+      --wall-b: #6e4428;
+      --wall-c: #12304f;
+      --wall-d: #060c16;
     }
   }
+
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font: 17px/1.55 "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: max(5vh, 24px) 16px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    background:
+      radial-gradient(1100px 720px at 10% -12%, var(--wall-a) 0%, transparent 62%),
+      radial-gradient(900px 640px at 105% 6%, var(--wall-b) 0%, transparent 58%),
+      radial-gradient(1300px 900px at 50% 125%, var(--wall-c) 0%, transparent 66%),
+      linear-gradient(165deg, var(--wall-c), var(--wall-d));
+    background-attachment: fixed;
   }
-  main { max-width: 660px; margin: 0 auto; padding: 24px 16px 56px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; }
-  .banner { background: var(--note); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; margin-bottom: 16px; font-size: .9rem; }
-  .step { font-size: .8rem; color: var(--muted); margin: 0 0 6px; letter-spacing: .06em; text-transform: uppercase; }
-  h1, h2 { line-height: 1.25; margin: 0 0 14px; }
-  h1 { font-size: 1.45rem; }
-  h2 { font-size: 1.2rem; }
-  h1:focus, h2:focus { outline: none; }
-  p { margin: 0 0 12px; }
-  .muted { color: var(--muted); font-size: .95rem; }
-  .check { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; cursor: pointer; }
-  .check input { width: 20px; height: 20px; margin: 3px 0 0; flex: none; accent-color: var(--accent); }
-  .field { margin: 8px 0 6px; }
-  .field label { display: block; font-weight: 600; margin-bottom: 6px; }
-  .pw {
-    width: 100%; font-size: 1.05rem; padding: 12px; border: 1px solid var(--line); border-radius: 8px;
-    background: transparent; color: inherit; -webkit-text-security: disc;
+
+  /* Window */
+  .window {
+    width: 100%;
+    max-width: 680px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--window);
+    -webkit-backdrop-filter: blur(40px) saturate(170%);
+    backdrop-filter: blur(40px) saturate(170%);
+    border: 1px solid var(--window-edge);
+    box-shadow: var(--shadow);
   }
-  .pw.show { -webkit-text-security: none; }
-  .actions { display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
-  button {
-    font: inherit; font-weight: 600; padding: 12px 22px; min-height: 44px; border-radius: 8px; border: 0;
-    background: var(--accent); color: var(--accent-ink); cursor: pointer;
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .window { background: var(--window-solid); }
   }
-  button:disabled { opacity: .4; cursor: not-allowed; }
-  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-  .quote { border-left: 4px solid var(--accent); padding: 6px 0 6px 14px; margin: 14px 0 18px; }
-  fieldset { border: 0; padding: 0; margin: 0 0 18px; }
-  legend { font-weight: 600; margin-bottom: 4px; padding: 0; }
-  .err { color: var(--err); }
-  .code { font-family: ui-monospace, Consolas, monospace; font-weight: 600; }
+  .titlebar {
+    height: 46px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 16px;
+    background: var(--titlebar);
+    border-bottom: 1px solid var(--line);
+    user-select: none;
+  }
+  .lights { display: flex; gap: 8px; }
+  .lights span { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 .5px rgba(0, 0, 0, .2); }
+  .lights span:nth-child(1) { background: #ff5f57; }
+  .lights span:nth-child(2) { background: #febc2e; }
+  .lights span:nth-child(3) { background: #28c840; }
+  .wtitle { font-size: 13px; font-weight: 600; letter-spacing: .01em; opacity: .85; white-space: nowrap; }
+  .wmeta { justify-self: end; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: rgba(255, 159, 10, .18); color: #a35a00; }
+  @media (prefers-color-scheme: dark) { .badge { color: #ffb340; } }
+  .progress { height: 3px; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 0 3px 3px 0; transition: width 300ms var(--ease); }
+
+  /* Content */
+  .content { padding: 30px 40px 26px; }
+  .screen { animation: enter 220ms var(--ease-in) both; }
+  @keyframes enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .hero { display: flex; flex-direction: column; align-items: center; text-align: center; margin: 0 0 22px; }
+  .tile {
+    width: 60px; height: 60px; border-radius: 15px; margin: 0 0 16px;
+    display: grid; place-items: center; color: #fff;
+    background: linear-gradient(180deg, #46a0ff, #0067d6);
+    box-shadow: 0 8px 18px rgba(0, 103, 214, .32), inset 0 1px 0 rgba(255, 255, 255, .35);
+  }
+  .tile svg { width: 30px; height: 30px; }
+  .tile.green { background: linear-gradient(180deg, #52d681, #1d9a4c); box-shadow: 0 8px 18px rgba(29, 154, 76, .32), inset 0 1px 0 rgba(255, 255, 255, .35); }
+  .tile.orange { background: linear-gradient(180deg, #ffb340, #f07b00); box-shadow: 0 8px 18px rgba(240, 123, 0, .30), inset 0 1px 0 rgba(255, 255, 255, .35); }
+  .tile.slate { background: linear-gradient(180deg, #8e9aaf, #5b6577); box-shadow: 0 8px 18px rgba(91, 101, 119, .30), inset 0 1px 0 rgba(255, 255, 255, .30); }
+  .eyebrow { margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-text); }
+  h1 { margin: 0 0 8px; font-size: 24px; line-height: 1.2; font-weight: 650; letter-spacing: -.012em; }
+  h1:focus { outline: none; }
+  .lead { margin: 0; max-width: 48ch; font-size: 15.5px; line-height: 1.5; color: var(--text-2); }
+
+  /* Grouped lists, like System Settings */
+  .group { margin: 0 0 16px; background: var(--group); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .group-label { margin: 0 0 8px 4px; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--text-2); }
+  .row { display: flex; gap: 14px; align-items: flex-start; padding: 13px 16px; }
+  .row + .row, .check + .check, .option + .option { border-top: 1px solid var(--line); }
+  .mini { flex: none; width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; color: #fff; margin-top: 1px; }
+  .mini svg { width: 16px; height: 16px; }
+  .mini.blue { background: #0a84ff; }
+  .mini.orange { background: #ff9f0a; }
+  .mini.green { background: #30b158; }
+  .mini.slate { background: #737b8c; }
+  .row h2 { margin: 3px 0 3px; font-size: 14.5px; font-weight: 600; }
+  .row p { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--text-2); }
+
+  .check, .option { display: flex; gap: 12px; align-items: flex-start; padding: 13px 16px; cursor: pointer; font-size: 15px; line-height: 1.45; transition: background 120ms var(--ease); }
+  .check:hover, .option:hover { background: var(--hover); }
+  .option { align-items: center; }
+  .check input, .option input { flex: none; width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--accent); cursor: pointer; }
+  .option input { margin: 0; }
+
+  /* Password field */
+  .field label { display: block; margin: 0 0 7px 2px; font-size: 13.5px; font-weight: 600; color: var(--text-2); }
+  .input {
+    width: 100%; font: inherit; font-size: 16px; color: var(--text);
+    padding: 11px 13px; border-radius: 9px; border: 1px solid var(--line-strong); background: var(--field);
+    outline: none; transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease);
+    -webkit-text-security: disc;
+  }
+  .input.show { -webkit-text-security: none; }
+  .input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--ring); }
+  .help { margin: 8px 2px 0; font-size: 13.5px; line-height: 1.45; color: var(--text-2); }
+  .switch { display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 14px; color: var(--text-2); cursor: pointer; }
+  .switch input {
+    -webkit-appearance: none; appearance: none; flex: none; margin: 0; cursor: pointer;
+    width: 38px; height: 22px; border-radius: 999px; position: relative;
+    background: rgba(120, 120, 128, .32); transition: background 200ms var(--ease);
+  }
+  .switch input::after {
+    content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .3); transition: transform 200ms var(--ease);
+  }
+  .switch input:checked { background: var(--accent); }
+  .switch input:checked::after { transform: translateX(16px); }
+  .switch input:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--ring); }
+
+  /* Reading sheet and timer */
+  .sheet { margin: 0 0 4px; padding: 20px 22px; background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; font-size: 17px; line-height: 1.65; box-shadow: 0 1px 2px rgba(0, 0, 0, .04); }
+  .timer { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .ring { position: relative; width: 34px; height: 34px; flex: none; }
+  .ring svg { width: 34px; height: 34px; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 3.5; }
+  .ring .track { stroke: var(--line-strong); }
+  .ring .bar { stroke: var(--accent); stroke-linecap: round; stroke-dasharray: 87.96; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear; }
+  .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 11px; font-weight: 600; color: var(--text); }
+  .ring.done .bar { stroke: #30b158; }
+
+  /* Questions */
+  fieldset { margin: 0 0 18px; padding: 0; border: 0; }
+  legend { margin: 0 0 8px 2px; padding: 0; font-size: 15px; font-weight: 600; line-height: 1.4; }
+  .error { margin: 0 0 6px; font-size: 14px; color: var(--danger); }
+
+  /* End screen */
+  .codebox { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 16px; }
+  .codebox small { display: block; font-size: 12.5px; color: var(--text-2); margin-bottom: 2px; }
+  .code { font-family: var(--mono); font-size: 17px; font-weight: 600; letter-spacing: .05em; }
+
+  /* Actions */
+  .actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .hint { display: flex; align-items: center; gap: 7px; font-size: 13px; line-height: 1.4; color: var(--text-2); }
+  .hint svg { width: 15px; height: 15px; flex: none; }
+  .btn {
+    flex: none; font: inherit; font-size: 15px; font-weight: 600; min-height: 40px; padding: 0 22px; border-radius: 9px; border: 0; cursor: pointer;
+    transition: background 150ms var(--ease), transform 100ms var(--ease), opacity 150ms var(--ease), box-shadow 150ms var(--ease);
+  }
+  .btn.primary { background: var(--accent); color: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .16), inset 0 1px 0 rgba(255, 255, 255, .18); }
+  .btn.primary:hover:not(:disabled) { background: var(--accent-press); }
+  .btn.secondary { min-height: 34px; padding: 0 14px; font-size: 14px; background: var(--group); color: var(--text); border: 1px solid var(--line-strong); }
+  .btn:active:not(:disabled) { transform: scale(.98); }
+  .btn:disabled { opacity: .42; cursor: not-allowed; }
+  .btn:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--ring); }
+
+  .spinner { width: 22px; height: 22px; border-radius: 50%; border: 2.5px solid var(--line-strong); border-top-color: var(--accent); animation: spin 800ms linear infinite; margin: 8px auto 14px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .below { margin-top: 18px; font-size: 12.5px; color: rgba(255, 255, 255, .82); text-align: center; text-shadow: 0 1px 2px rgba(0, 0, 0, .3); }
+  .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
   [hidden] { display: none !important; }
+
+  @media (max-width: 560px) {
+    body { padding: 16px 16px 24px; }
+    .titlebar { padding: 0 12px; }
+    .wtitle { font-size: 12px; }
+    .content { padding: 24px 20px 22px; }
+    h1 { font-size: 22px; }
+    .lead, .row p, .check, .option, .help { font-size: 16px; }
+    .sheet { padding: 16px 18px; }
+    .actions { flex-direction: column-reverse; align-items: stretch; gap: 14px; }
+    .actions .btn.primary { width: 100%; min-height: 46px; }
+    .hint { justify-content: center; text-align: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
 </style>
 </head>
 <body>
-<main>
-  <div class="banner" id="banner" hidden></div>
-  <div class="card">
+<div class="window" role="main">
+  <div class="titlebar">
+    <div class="lights" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="wtitle">Password Study</div>
+    <div class="wmeta"><span class="badge" id="badge" hidden></span><span id="step" aria-live="polite"></span></div>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="progress"></i></div>
 
-    <noscript><p>Please turn on JavaScript to take part in this study.</p></noscript>
+  <div class="content">
+    <noscript><p class="lead">Please turn on JavaScript to take part in this study.</p></noscript>
 
-    <section id="s-loading" aria-busy="true">
-      <p>Loading the study...</p>
+    <section class="screen" id="s-loading">
+      <div class="hero"><div class="spinner" aria-hidden="true"></div><p class="lead">Loading the study...</p></div>
     </section>
 
-    <section id="s-error" hidden>
-      <h1 tabindex="-1">Something went wrong</h1>
-      <p>The page could not load the password checker. Please check your internet connection and reload the page.</p>
-    </section>
-
-    <section id="s-repeat" hidden>
-      <h1 tabindex="-1">You have already taken part</h1>
-      <p>This browser shows that you already completed the study. Thank you! Please take part only once.</p>
-    </section>
-
-    <section id="s-info" hidden>
-      <p class="step">Information</p>
-      <h1 tabindex="-1">Creating passwords for new accounts</h1>
-      <p>This is a short study by three Software Engineering students of group PI25E at Vilniaus kolegija (Mohamed Arkik, Jamal El-Mazzioui and Brahim Daali) for the course Applied Research Methodology.</p>
-      <p><strong>What you will do.</strong> Create passwords for two imaginary accounts, read a short text and answer two short questions. It takes about 5 minutes.</p>
-      <p><strong>Important.</strong> Do not type any password that you use for a real account. Make new ones, and do not use them anywhere after the study.</p>
-      <p><strong>What we save.</strong> A random code, numbers about each password (estimated strength and length), your answers to the two questions, whether you pasted a password and whether you left this page while reading the text. Your passwords are checked inside your browser and are never saved or sent. We do not ask for your name or email.</p>
-      <p><strong>Your rights.</strong> Taking part is voluntary. You can stop at any time by closing this page, and it has no effect on your grades. The answers are kept in a private file that only our team and our lecturer can open. We will delete them after the course ends.</p>
-      <p class="muted">Please take part only once and, if you can, use a computer. Questions? Message any of us on Microsoft Teams.</p>
-      <label class="check"><input type="checkbox" id="c-age"> <span>I am 18 or older.</span></label>
-      <label class="check"><input type="checkbox" id="c-consent"> <span>I have read this information and I agree to take part.</span></label>
-      <div class="actions"><button type="button" id="b-start" disabled>Start</button></div>
-    </section>
-
-    <section id="s-task1" hidden>
-      <p class="step">Account 1 of 2</p>
-      <h2 tabindex="-1">Study room booking portal</h2>
-      <p>Imagine that VIKO has a new online portal for booking study rooms, and you are creating your account in it today.</p>
-      <p>Create a new password that you would really use for this account. Do not use a password that you already use for a real account.</p>
-      <div class="field">
-        <label for="pw1">Password for Account 1</label>
-        <input class="pw" id="pw1" type="text" maxlength="100" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore data-form-type="other">
+    <section class="screen" id="s-error" hidden>
+      <div class="hero">
+        <div class="tile orange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3z"/><path d="M12 10v4.5M12 17.5h.01"/></svg></div>
+        <h1 tabindex="-1">Something went wrong</h1>
+        <p class="lead">The page could not load the password checker. Please check your internet connection and reload the page.</p>
       </div>
-      <label class="check"><input type="checkbox" class="show-toggle" data-target="pw1"> <span>Show password</span></label>
-      <div class="actions"><button type="button" id="b-task1" disabled>Next</button></div>
     </section>
 
-    <section id="s-read" hidden>
-      <p class="step">Short text</p>
-      <h2 tabindex="-1">Before the next account, please read this short text</h2>
-      <div class="quote" id="read-text"></div>
-      <p class="muted" id="countdown" aria-live="polite"></p>
-      <div class="actions"><button type="button" id="b-read" disabled>Next</button></div>
-    </section>
-
-    <section id="s-task2" hidden>
-      <p class="step">Account 2 of 2</p>
-      <h2 tabindex="-1">E-book library service</h2>
-      <p>Imagine that the college library has a new online service for borrowing e-books, and you are creating your account in it today.</p>
-      <p>Create a new password that you would really use for this account. Do not use a password that you already use for a real account, and do not reuse the password from Account 1.</p>
-      <div class="field">
-        <label for="pw2">Password for Account 2</label>
-        <input class="pw" id="pw2" type="text" maxlength="100" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore data-form-type="other">
+    <section class="screen" id="s-repeat" hidden>
+      <div class="hero">
+        <div class="tile green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+        <h1 tabindex="-1">You have already taken part</h1>
+        <p class="lead">This browser shows that you already completed the study. Thank you! Please take part only once.</p>
       </div>
-      <label class="check"><input type="checkbox" class="show-toggle" data-target="pw2"> <span>Show password</span></label>
-      <div class="actions"><button type="button" id="b-task2" disabled>Next</button></div>
     </section>
 
-    <section id="s-questions" hidden>
-      <p class="step">Last step</p>
-      <h2 tabindex="-1">Two short questions</h2>
+    <section class="screen" id="s-info" hidden>
+      <div class="hero">
+        <div class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg></div>
+        <p class="eyebrow">Vilniaus kolegija study</p>
+        <h1 tabindex="-1">Creating passwords for new accounts</h1>
+        <p class="lead">A short study by three Software Engineering students of group PI25E for the course Applied Research Methodology. It takes about 5 minutes.</p>
+      </div>
+
+      <div class="group">
+        <div class="row">
+          <span class="mini blue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+          <div><h2>What you will do</h2><p>Create passwords for two imaginary accounts, read a short text and answer two short questions. It works best on a computer.</p></div>
+        </div>
+        <div class="row">
+          <span class="mini orange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 2.8 19.5h18.4L12 3.5z"/><path d="M12 10v4M12 17h.01"/></svg></span>
+          <div><h2>Important</h2><p>Do not type any password that you use for a real account. Make new ones, and do not use them anywhere after the study.</p></div>
+        </div>
+        <div class="row">
+          <span class="mini green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.4 3 8 7 9.5 4-1.5 7-5.1 7-9.5V6l-7-3z"/></svg></span>
+          <div><h2>What we save</h2><p>A random code, numbers about each password (estimated strength and length), your answers to two questions, whether you pasted a password and whether you left this page while reading. Your passwords are checked inside your browser and are never saved or sent. We do not ask for your name or email.</p></div>
+        </div>
+        <div class="row">
+          <span class="mini slate" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></span>
+          <div><h2>Your rights</h2><p>Taking part is voluntary. You can stop at any time by closing this page, and it has no effect on your grades. Only our team and our lecturer can see the answers, and we delete them after the course ends.</p></div>
+        </div>
+      </div>
+
+      <p class="group-label">Before you start</p>
+      <div class="group">
+        <label class="check"><input type="checkbox" id="c-age"><span>I study Software Engineering at Vilniaus kolegija and I am 18 or older.</span></label>
+        <label class="check"><input type="checkbox" id="c-consent"><span>I have read this information and I agree to take part.</span></label>
+      </div>
+
+      <div class="actions">
+        <span class="hint">Questions? Message Mohamed Arkik, Jamal El-Mazzioui or Brahim Daali on Microsoft Teams.</span>
+        <button type="button" class="btn primary" id="b-start" disabled>Start</button>
+      </div>
+    </section>
+
+    <section class="screen" id="s-task1" hidden>
+      <div class="hero">
+        <div class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 8.7-8.7M16.5 6.5l2.5 2.5M14 9l2 2"/></svg></div>
+        <p class="eyebrow">Account 1 of 2</p>
+        <h1 tabindex="-1">Study room booking portal</h1>
+        <p class="lead">Imagine that VIKO has a new online portal for booking study rooms, and you are creating your account in it today.</p>
+      </div>
+      <div class="field">
+        <label for="pw1">Create a new password that you would really use for this account</label>
+        <input class="input" id="pw1" type="text" maxlength="100" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore data-form-type="other">
+        <p class="help">Do not use a password that you already use for a real account.</p>
+      </div>
+      <label class="switch"><input type="checkbox" role="switch" class="show-toggle" data-target="pw1"><span>Show password</span></label>
+      <div class="actions">
+        <span class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>Checked in your browser. Never saved or sent.</span>
+        <button type="button" class="btn primary" id="b-task1" disabled>Continue</button>
+      </div>
+    </section>
+
+    <section class="screen" id="s-read" hidden>
+      <div class="hero">
+        <div class="tile slate" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5h-10.5A.5.5 0 0 1 6.5 20V4a.5.5 0 0 1 .5-.5z"/><path d="M9.5 12h5M9.5 15.5h5"/></svg></div>
+        <p class="eyebrow">Short text</p>
+        <h1 tabindex="-1">Before the next account, please read this short text</h1>
+      </div>
+      <div class="sheet" id="read-text"></div>
+      <p class="sr-only" id="read-live" aria-live="polite"></p>
+      <div class="actions">
+        <span class="timer" aria-hidden="true">
+          <span class="ring" id="ring"><svg viewBox="0 0 34 34"><circle class="track" cx="17" cy="17" r="14"/><circle class="bar" id="ring-bar" cx="17" cy="17" r="14"/></svg><b id="ring-num">60</b></span>
+          <span id="ring-text">Take your time to read the text.</span>
+        </span>
+        <button type="button" class="btn primary" id="b-read" disabled>Continue</button>
+      </div>
+    </section>
+
+    <section class="screen" id="s-task2" hidden>
+      <div class="hero">
+        <div class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5c2.7-1 5.3-1 8 .8v13.4c-2.7-1.8-5.3-1.8-8-.8V5.5zM20 5.5c-2.7-1-5.3-1-8 .8v13.4c2.7-1.8 5.3-1.8 8-.8V5.5z"/></svg></div>
+        <p class="eyebrow">Account 2 of 2</p>
+        <h1 tabindex="-1">E-book library service</h1>
+        <p class="lead">Imagine that the college library has a new online service for borrowing e-books, and you are creating your account in it today.</p>
+      </div>
+      <div class="field">
+        <label for="pw2">Create a new password that you would really use for this account</label>
+        <input class="input" id="pw2" type="text" maxlength="100" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore data-form-type="other">
+        <p class="help">Do not use a password from a real account, and do not reuse the password from Account 1.</p>
+      </div>
+      <label class="switch"><input type="checkbox" role="switch" class="show-toggle" data-target="pw2"><span>Show password</span></label>
+      <div class="actions">
+        <span class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>Checked in your browser. Never saved or sent.</span>
+        <button type="button" class="btn primary" id="b-task2" disabled>Continue</button>
+      </div>
+    </section>
+
+    <section class="screen" id="s-questions" hidden>
+      <div class="hero">
+        <div class="tile green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6.5h10M9 12h10M9 17.5h10"/><path d="m4 6.5 1 1 2-2M4 12l1 1 2-2M4 17.5l1 1 2-2"/></svg></div>
+        <p class="eyebrow">Last step</p>
+        <h1 tabindex="-1">Two short questions</h1>
+      </div>
       <fieldset>
         <legend>1. Have you ever had a lesson or training about password security?</legend>
-        <label class="check"><input type="radio" name="training" value="yes"> <span>Yes</span></label>
-        <label class="check"><input type="radio" name="training" value="no"> <span>No</span></label>
+        <div class="group">
+          <label class="option"><input type="radio" name="training" value="yes"><span>Yes</span></label>
+          <label class="option"><input type="radio" name="training" value="no"><span>No</span></label>
+        </div>
       </fieldset>
       <fieldset>
         <legend>2. Which device are you using right now?</legend>
-        <label class="check"><input type="radio" name="device" value="computer"> <span>Computer (laptop or desktop)</span></label>
-        <label class="check"><input type="radio" name="device" value="phone"> <span>Phone</span></label>
-        <label class="check"><input type="radio" name="device" value="tablet"> <span>Tablet</span></label>
+        <div class="group">
+          <label class="option"><input type="radio" name="device" value="computer"><span>Computer (laptop or desktop)</span></label>
+          <label class="option"><input type="radio" name="device" value="phone"><span>Phone</span></label>
+          <label class="option"><input type="radio" name="device" value="tablet"><span>Tablet</span></label>
+        </div>
       </fieldset>
-      <p class="err" id="send-error" role="alert" hidden>Your answers could not be sent. Please check your internet connection and press the button again.</p>
-      <div class="actions"><button type="button" id="b-send" disabled>Send answers</button></div>
-    </section>
-
-    <section id="s-end" hidden>
-      <h1 tabindex="-1">Thank you for taking part!</h1>
-      <p>Your answers have been sent.</p>
-      <p><strong>About this study.</strong> We compare passwords created after reading a short password guideline with passwords created after reading a neutral text. The computer chose at random which text you read. Your passwords were never saved.</p>
-      <div id="end-guideline" hidden>
-        <p>You read the neutral text. Here is the guideline, so you can use the advice too:</p>
-        <div class="quote" id="end-guideline-text"></div>
+      <p class="error" id="send-error" role="alert" hidden>Your answers could not be sent. Please check your internet connection and press the button again.</p>
+      <div class="actions">
+        <span class="hint">Your answers are sent without your name or email.</span>
+        <button type="button" class="btn primary" id="b-send" disabled>Send answers</button>
       </div>
-      <p>Please do not use the passwords from this study anywhere, and please do not tell other students about the texts until the end of this week.</p>
-      <p class="muted">Your participant code is <span class="code" id="end-code"></span>. If you change your mind within 7 days, send us this code on Microsoft Teams and we will delete your answers.</p>
     </section>
 
+    <section class="screen" id="s-end" hidden>
+      <div class="hero">
+        <div class="tile green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+        <h1 tabindex="-1">Thank you for taking part!</h1>
+        <p class="lead">Your answers have been sent. You can close this page now.</p>
+      </div>
+      <div class="group">
+        <div class="row">
+          <span class="mini blue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/></svg></span>
+          <div><h2>About this study</h2><p>We compare passwords created after reading a short password guideline with passwords created after reading a neutral text. The computer chose at random which text you read. Your passwords were never saved.</p></div>
+        </div>
+        <div class="row">
+          <span class="mini orange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 2.8 19.5h18.4L12 3.5z"/><path d="M12 10v4M12 17h.01"/></svg></span>
+          <div><h2>Please</h2><p>Do not use the passwords from this study anywhere, and do not tell other students about the texts until the end of this week.</p></div>
+        </div>
+      </div>
+      <div id="end-guideline" hidden>
+        <p class="group-label">The guideline, so you can use the advice too</p>
+        <div class="sheet" id="end-guideline-text"></div>
+      </div>
+      <div class="group" style="margin-top:16px">
+        <div class="codebox">
+          <div><small>Your participant code</small><span class="code" id="end-code"></span></div>
+          <button type="button" class="btn secondary" id="b-copy">Copy</button>
+        </div>
+      </div>
+      <p class="help">If you change your mind within 7 days, send us this code on Microsoft Teams and we will delete your answers.</p>
+    </section>
   </div>
-</main>
+</div>
+<p class="below">Applied Research Methodology, group PI25E, Vilniaus kolegija</p>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" integrity="sha512-TZlMGFY9xKj38t/5m2FzJ+RM/aD5alMHDe26p0mYUMoCF5G7ibfHUQILq0qQPV3wlsnCwL+TPRNK4vIWGLOkUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
@@ -169,6 +440,7 @@
   var FORM_FIELD = 'entry.797820977';
   var ZXCVBN_VERSION = '4.4.2';
   var READ_SECONDS = 60;
+  var RING_LENGTH = 87.96;
 
   var GUIDELINE = 'Create a new password only for this fictional account. Do not use a password that you use anywhere else. ' +
     'Aim for at least 15 characters. Several unrelated words can make a longer password easier to build, but avoid familiar ' +
@@ -183,6 +455,9 @@
   var mode = new URLSearchParams(location.search).get('mode');
   if (mode !== 'pilot' && mode !== 'test') mode = 'main';
   var DONE_KEY = 'pwstudy-done-' + mode;
+
+  var STEPS = { 's-info': 1, 's-task1': 2, 's-read': 3, 's-task2': 4, 's-questions': 5, 's-end': 6 };
+  var SCREENS = ['s-loading', 's-error', 's-repeat', 's-info', 's-task1', 's-read', 's-task2', 's-questions', 's-end'];
 
   function randomInts(n) {
     var a = new Uint32Array(n);
@@ -208,14 +483,17 @@
   };
 
   function $(id) { return document.getElementById(id); }
-  var SCREENS = ['s-loading', 's-error', 's-repeat', 's-info', 's-task1', 's-read', 's-task2', 's-questions', 's-end'];
 
   function show(id) {
     SCREENS.forEach(function (s) { $(s).hidden = (s !== id); });
     state.current = id;
+    var step = STEPS[id];
+    $('progress').style.width = step ? Math.round((step - 1) / 5 * 100) + '%' : '0';
+    if (id === 's-end') $('progress').style.width = '100%';
+    $('step').textContent = step ? (step <= 5 ? 'Step ' + step + ' of 5' : 'Done') : '';
     window.scrollTo(0, 0);
-    var heading = $(id).querySelector('h1, h2');
-    if (heading) heading.focus();
+    var heading = $(id).querySelector('h1');
+    if (heading) heading.focus({ preventScroll: true });
   }
 
   function storageGet(key) {
@@ -252,16 +530,24 @@
     $('read-text').textContent = state.group === 'G' ? GUIDELINE : NEUTRAL;
     show('s-read');
     var started = Date.now();
-    var button = $('b-read');
-    var countdown = $('countdown');
+    var bar = $('ring-bar');
+    var num = $('ring-num');
+    var text = $('ring-text');
+    $('read-live').textContent = 'The Continue button will work in ' + READ_SECONDS + ' seconds.';
     function tick() {
       var left = READ_SECONDS - Math.floor((Date.now() - started) / 1000);
       if (left <= 0) {
-        countdown.textContent = 'You can continue now.';
-        button.disabled = false;
+        bar.style.strokeDashoffset = '0';
+        num.textContent = '✓';
+        $('ring').classList.add('done');
+        text.textContent = 'You can continue now.';
+        $('read-live').textContent = 'You can continue now.';
+        $('b-read').disabled = false;
         return;
       }
-      countdown.textContent = 'The Next button will work in ' + left + ' seconds.';
+      num.textContent = String(left);
+      bar.style.strokeDashoffset = String(RING_LENGTH * (1 - left / READ_SECONDS));
+      text.textContent = 'You can continue in ' + left + ' s.';
       setTimeout(tick, 1000);
     }
     tick();
@@ -283,10 +569,8 @@
 
   function init() {
     if (mode !== 'main') {
-      $('banner').textContent = mode === 'pilot'
-        ? 'Pilot version: thank you for testing the study before it starts.'
-        : 'Test mode: these answers are marked as test and are not used.';
-      $('banner').hidden = false;
+      $('badge').textContent = mode === 'pilot' ? 'Pilot' : 'Test';
+      $('badge').hidden = false;
     }
     if (typeof window.zxcvbn !== 'function') { show('s-error'); return; }
     if (mode !== 'test' && storageGet(DONE_KEY)) { show('s-repeat'); return; }
@@ -340,6 +624,16 @@
           button.textContent = 'Send answers';
           button.disabled = false;
         });
+    });
+
+    $('b-copy').addEventListener('click', function () {
+      var button = $('b-copy');
+      var done = function () { button.textContent = 'Copied'; setTimeout(function () { button.textContent = 'Copy'; }, 1600); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(state.code).then(done, function () { button.textContent = 'Copy failed'; });
+      } else {
+        button.textContent = 'Copy failed';
+      }
     });
 
     show('s-info');
