@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Creating passwords for new accounts</title>
+<style>
+  :root {
+    --bg: #f4f3ef; --card: #ffffff; --ink: #1c2230; --muted: #596273;
+    --accent: #1f4e8c; --accent-ink: #ffffff; --line: #d7dae1; --err: #a12a2a; --note: #fff7e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151b; --card: #1b1f27; --ink: #e7e9ee; --muted: #a2aab8;
+      --accent: #8ab4ff; --accent-ink: #0d1420; --line: #323946; --err: #ff9a9a; --note: #2a2618;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.55 "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  main { max-width: 660px; margin: 0 auto; padding: 24px 16px 56px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; }
+  .banner { background: var(--note); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; margin-bottom: 16px; font-size: .9rem; }
+  .step { font-size: .8rem; color: var(--muted); margin: 0 0 6px; letter-spacing: .06em; text-transform: uppercase; }
+  h1, h2 { line-height: 1.25; margin: 0 0 14px; }
+  h1 { font-size: 1.45rem; }
+  h2 { font-size: 1.2rem; }
+  h1:focus, h2:focus { outline: none; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); font-size: .95rem; }
+  .check { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; cursor: pointer; }
+  .check input { width: 20px; height: 20px; margin: 3px 0 0; flex: none; accent-color: var(--accent); }
+  .field { margin: 8px 0 6px; }
+  .field label { display: block; font-weight: 600; margin-bottom: 6px; }
+  .pw {
+    width: 100%; font-size: 1.05rem; padding: 12px; border: 1px solid var(--line); border-radius: 8px;
+    background: transparent; color: inherit; -webkit-text-security: disc;
+  }
+  .pw.show { -webkit-text-security: none; }
+  .actions { display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+  button {
+    font: inherit; font-weight: 600; padding: 12px 22px; min-height: 44px; border-radius: 8px; border: 0;
+    background: var(--accent); color: var(--accent-ink); cursor: pointer;
+  }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .quote { border-left: 4px solid var(--accent); padding: 6px 0 6px 14px; margin: 14px 0 18px; }
+  fieldset { border: 0; padding: 0; margin: 0 0 18px; }
+  legend { font-weight: 600; margin-bottom: 4px; padding: 0; }
+  .err { color: var(--err); }
+  .code { font-family: ui-monospace, Consolas, monospace; font-weight: 600; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div class="banner" id="banner" hidden></div>
+  <div class="card">
+
+    <noscript><p>Please turn on JavaScript to take part in this study.</p></noscript>
+
+    <section id="s-loading" aria-busy="true">
+      <p>Loading the study...</p>
+    </section>
+
+    <section id="s-error" hidden>
+      <h1 tabindex="-1">Something went wrong</h1>
+      <p>The page could not load the password checker. Please check your internet connection and reload the page.</p>
+    </section>
+
+    <section id="s-repeat" hidden>
+      <h1 tabindex="-1">You have already taken part</h1>
+      <p>This browser shows that you already completed the study. Thank you! Please take part only once.</p>
+    </section>
+
+    <section id="s-info" hidden>
+      <p class="step">Information</p>
+      <h1 tabindex="-1">Creating passwords for new accounts</h1>
+      <p>This is a short study by three Software Engineering students of group PI25E at Vilniaus kolegija (Mohamed Arkik, Jamal El-Mazzioui and Brahim Daali) for the course Applied Research Methodology.</p>
+      <p><strong>What you will do.</strong> Create passwords for two imaginary accounts, read a short text and answer two short questions. It takes about 5 minutes.</p>
+      <p><strong>Important.</strong> Do not type any password that you use for a real account. Make new ones, and do not use them anywhere after the study.</p>
+      <p><strong>What we save.</strong> A random code, numbers about each password (estimated strength and length), your answers to the two questions, whether you pasted a password and whether you left this page while reading the text. Your passwords are checked inside your browser and are never saved or sent. We do not ask for your name or email.</p>
+      <p><strong>Your rights.</strong> Taking part is voluntary. You can stop at any time by closing this page, and it has no effect on your grades. The answers are kept in a private file that only our team and our lecturer can open. We will delete them after the course ends.</p>
+      <p class="muted">Please take part only once and, if you can, use a computer. Questions? Message any of us on Microsoft Teams.</p>
+      <label class="check"><input type="checkbox" id="c-age"> <span>I am 18 or older.</span></label>
+      <label class="check"><input type="checkbox" id="c-consent"> <span>I have read this information and I agree to take part.</span></label>
+      <div class="actions"><button type="button" id="b-start" disabled>Start</button></div>
+    </section>
+
+    <section id="s-task1" hidden>
+      <p class="step">Account 1 of 2</p>
+      <h2 tabindex="-1">Study room booking portal</h2>
+      <p>Imagine that VIKO has a new online portal for booking study rooms, and you are creating your account in it today.</p>
+      <p>Create a new password that you would really use for this account. Do not use a password that you already use for a real account.</p>
+      <div class="field">
+        <label for="pw1">Password for Account 1</label>
+        <input class="pw" id="pw1" type="text" maxlength="100" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore data-form-type="other">
+      </div>
+      <label class="check"><input type="checkbox" class="show-toggle" data-target="pw1"> <span>Show password</span></label>
+      <div class="actions"><button type="button" id="b-task1" disabled>Next</button></div>
+    </section>
+
+    <section id="s-read" hidden>
+      <p class="step">Short text</p>
+      <h2 tabindex="-1">Before the next account, please read this short text</h2>
+      <div class="quote" id="read-text"></div>
+      <p class="muted" id="countdown" aria-live="polite"></p>
+      <div class="actions"><button type="button" id="b-read" disabled>Next</button></div>
+    </section>
+
+    <section id="s-task2" hidden>
+      <p class="step">Account 2 of 2</p>
+      <h2 tabindex="-1">E-book library service</h2>
+      <p>Imagine that the college library has a new online service for borrowing e-books, and you are creating your account in it today.</p>
+      <p>Create a new password that you would really use for this account. Do not use a password that you already use for a real account, and do not reuse the password from Account 1.</p>
+      <div class="field">
+        <label for="pw2">Password for Account 2</label>
+        <input class="pw" id="pw2" type="text" maxlength="100" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore data-form-type="other">
+      </div>
+      <label class="check"><input type="checkbox" class="show-toggle" data-target="pw2"> <span>Show password</span></label>
+      <div class="actions"><button type="button" id="b-task2" disabled>Next</button></div>
+    </section>
+
+    <section id="s-questions" hidden>
+      <p class="step">Last step</p>
+      <h2 tabindex="-1">Two short questions</h2>
+      <fieldset>
+        <legend>1. Have you ever had a lesson or training about password security?</legend>
+        <label class="check"><input type="radio" name="training" value="yes"> <span>Yes</span></label>
+        <label class="check"><input type="radio" name="training" value="no"> <span>No</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>2. Which device are you using right now?</legend>
+        <label class="check"><input type="radio" name="device" value="computer"> <span>Computer (laptop or desktop)</span></label>
+        <label class="check"><input type="radio" name="device" value="phone"> <span>Phone</span></label>
+        <label class="check"><input type="radio" name="device" value="tablet"> <span>Tablet</span></label>
+      </fieldset>
+      <p class="err" id="send-error" role="alert" hidden>Your answers could not be sent. Please check your internet connection and press the button again.</p>
+      <div class="actions"><button type="button" id="b-send" disabled>Send answers</button></div>
+    </section>
+
+    <section id="s-end" hidden>
+      <h1 tabindex="-1">Thank you for taking part!</h1>
+      <p>Your answers have been sent.</p>
+      <p><strong>About this study.</strong> We compare passwords created after reading a short password guideline with passwords created after reading a neutral text. The computer chose at random which text you read. Your passwords were never saved.</p>
+      <div id="end-guideline" hidden>
+        <p>You read the neutral text. Here is the guideline, so you can use the advice too:</p>
+        <div class="quote" id="end-guideline-text"></div>
+      </div>
+      <p>Please do not use the passwords from this study anywhere, and please do not tell other students about the texts until the end of this week.</p>
+      <p class="muted">Your participant code is <span class="code" id="end-code"></span>. If you change your mind within 7 days, send us this code on Microsoft Teams and we will delete your answers.</p>
+    </section>
+
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" integrity="sha512-TZlMGFY9xKj38t/5m2FzJ+RM/aD5alMHDe26p0mYUMoCF5G7ibfHUQILq0qQPV3wlsnCwL+TPRNK4vIWGLOkUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+(function () {
+  'use strict';
+
+  // Answers go to a Google Form with one short-answer field ("row") that holds one CSV line.
+  var FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSerKLy6ZaLjmcTUmtXPrGBKJqx2l4PyRA3snx2tq2rwfGFUkA/formResponse';
+  var FORM_FIELD = 'entry.797820977';
+  var ZXCVBN_VERSION = '4.4.2';
+  var READ_SECONDS = 60;
+
+  var GUIDELINE = 'Create a new password only for this fictional account. Do not use a password that you use anywhere else. ' +
+    'Aim for at least 15 characters. Several unrelated words can make a longer password easier to build, but avoid familiar ' +
+    'quotations, personal details and obvious sequences. Adding a predictable number or symbol to a common word does not ' +
+    'automatically make it hard to guess.';
+  var NEUTRAL = 'The new e-book service will let students borrow up to five e-books at the same time. Each loan lasts 21 days ' +
+    'and can be renewed once if nobody else is waiting for the book. Books can be read in the browser or on a phone. The ' +
+    'catalogue will include textbooks for all study programmes and fiction in Lithuanian and English. The service will be ' +
+    'free for all students.';
+
+  // ?mode=pilot marks pilot answers, ?mode=test marks our own test runs. Both are kept out of the main data.
+  var mode = new URLSearchParams(location.search).get('mode');
+  if (mode !== 'pilot' && mode !== 'test') mode = 'main';
+  var DONE_KEY = 'pwstudy-done-' + mode;
+
+  function randomInts(n) {
+    var a = new Uint32Array(n);
+    crypto.getRandomValues(a);
+    return a;
+  }
+  function makeCode() {
+    var abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    var r = randomInts(5);
+    var out = '';
+    for (var i = 0; i < r.length; i++) out += abc[r[i] % abc.length];
+    return 'P-' + out;
+  }
+
+  var state = {
+    code: makeCode(),
+    group: randomInts(1)[0] % 2 === 0 ? 'G' : 'C',
+    t1: null,
+    t2: null,
+    away: false,
+    pasted: false,
+    current: 's-loading'
+  };
+
+  function $(id) { return document.getElementById(id); }
+  var SCREENS = ['s-loading', 's-error', 's-repeat', 's-info', 's-task1', 's-read', 's-task2', 's-questions', 's-end'];
+
+  function show(id) {
+    SCREENS.forEach(function (s) { $(s).hidden = (s !== id); });
+    state.current = id;
+    window.scrollTo(0, 0);
+    var heading = $(id).querySelector('h1, h2');
+    if (heading) heading.focus();
+  }
+
+  function storageGet(key) {
+    try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+  function storageSet(key, value) {
+    try { window.localStorage.setItem(key, value); } catch (e) { /* private window: the repeat check is not available */ }
+  }
+
+  // Only these numbers leave the function. The password itself is never stored.
+  function measure(pw) {
+    var r = window.zxcvbn(pw);
+    return { log: r.guesses_log10.toFixed(2), score: r.score, len: Array.from(pw).length };
+  }
+
+  function wirePasswordStep(inputId, buttonId, onDone) {
+    var input = $(inputId);
+    var button = $(buttonId);
+    input.addEventListener('input', function () { button.disabled = input.value.length === 0; });
+    input.addEventListener('paste', function () { state.pasted = true; });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !button.disabled) button.click();
+    });
+    button.addEventListener('click', function () {
+      if (input.value.length === 0) return;
+      var result = measure(input.value);
+      input.value = '';
+      button.disabled = true;
+      onDone(result);
+    });
+  }
+
+  function startReading() {
+    $('read-text').textContent = state.group === 'G' ? GUIDELINE : NEUTRAL;
+    show('s-read');
+    var started = Date.now();
+    var button = $('b-read');
+    var countdown = $('countdown');
+    function tick() {
+      var left = READ_SECONDS - Math.floor((Date.now() - started) / 1000);
+      if (left <= 0) {
+        countdown.textContent = 'You can continue now.';
+        button.disabled = false;
+        return;
+      }
+      countdown.textContent = 'The Next button will work in ' + left + ' seconds.';
+      setTimeout(tick, 1000);
+    }
+    tick();
+  }
+
+  function buildRow(training, device) {
+    return [
+      mode, state.code, state.group, training, device,
+      state.away ? 'yes' : 'no', state.pasted ? 'yes' : 'no',
+      state.t1.log, state.t2.log, state.t1.score, state.t2.score, state.t1.len, state.t2.len,
+      ZXCVBN_VERSION
+    ].join(',');
+  }
+
+  function checkedValue(name) {
+    var el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  function init() {
+    if (mode !== 'main') {
+      $('banner').textContent = mode === 'pilot'
+        ? 'Pilot version: thank you for testing the study before it starts.'
+        : 'Test mode: these answers are marked as test and are not used.';
+      $('banner').hidden = false;
+    }
+    if (typeof window.zxcvbn !== 'function') { show('s-error'); return; }
+    if (mode !== 'test' && storageGet(DONE_KEY)) { show('s-repeat'); return; }
+
+    var age = $('c-age');
+    var consent = $('c-consent');
+    function updateStart() { $('b-start').disabled = !(age.checked && consent.checked); }
+    age.addEventListener('change', updateStart);
+    consent.addEventListener('change', updateStart);
+    $('b-start').addEventListener('click', function () { show('s-task1'); });
+
+    Array.prototype.forEach.call(document.querySelectorAll('.show-toggle'), function (box) {
+      box.addEventListener('change', function () {
+        $(box.getAttribute('data-target')).classList.toggle('show', box.checked);
+      });
+    });
+
+    wirePasswordStep('pw1', 'b-task1', function (r) { state.t1 = r; startReading(); });
+    $('b-read').addEventListener('click', function () { show('s-task2'); });
+    wirePasswordStep('pw2', 'b-task2', function (r) { state.t2 = r; show('s-questions'); });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden && state.current === 's-read') state.away = true;
+    });
+
+    function updateSend() { $('b-send').disabled = !(checkedValue('training') && checkedValue('device')); }
+    Array.prototype.forEach.call(document.querySelectorAll('input[type="radio"]'), function (r) {
+      r.addEventListener('change', updateSend);
+    });
+
+    $('b-send').addEventListener('click', function () {
+      var button = $('b-send');
+      var row = buildRow(checkedValue('training'), checkedValue('device'));
+      var body = new URLSearchParams();
+      body.append(FORM_FIELD, row);
+      button.disabled = true;
+      button.textContent = 'Sending...';
+      $('send-error').hidden = true;
+      fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: body })
+        .then(function () {
+          storageSet(DONE_KEY, new Date().toISOString().slice(0, 10));
+          $('end-code').textContent = state.code;
+          if (state.group === 'C') {
+            $('end-guideline-text').textContent = GUIDELINE;
+            $('end-guideline').hidden = false;
+          }
+          show('s-end');
+        })
+        .catch(function () {
+          $('send-error').hidden = false;
+          button.textContent = 'Send answers';
+          button.disabled = false;
+        });
+    });
+
+    show('s-info');
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
