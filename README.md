@@ -17,7 +17,9 @@ A short online experiment for the course Applied Research Methodology at Vilniau
 Password strength is estimated in the browser with zxcvbn 4.4.2. The password text is never saved or sent. Only these numbers are sent to a Google Form that collects no names or email addresses:
 
 ```
-mode,code,group,training,device,away,pasted,log_t1,log_t2,score_t1,score_t2,len_t1,len_t2,zxcvbn_version
+mode,code,group,training,device,away,pasted,log_t1,log_t2,score_t1,score_t2,len_t1,len_t2,zxcvbn_version,read_seconds
 ```
+
+`read_seconds` was added on 10 November 2026 (02:4x). Lines without it were collected with the 60-second reading time.
 
 `away` is `yes` if the participant left the page while reading the text, and `pasted` is `yes` if a password was pasted instead of typed.
