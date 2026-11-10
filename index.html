@@ -344,7 +344,7 @@
       <p class="sr-only" id="read-live" aria-live="polite"></p>
       <div class="actions">
         <span class="timer" aria-hidden="true">
-          <span class="ring" id="ring"><svg viewBox="0 0 34 34"><circle class="track" cx="17" cy="17" r="14"/><circle class="bar" id="ring-bar" cx="17" cy="17" r="14"/></svg><b id="ring-num">60</b></span>
+          <span class="ring" id="ring"><svg viewBox="0 0 34 34"><circle class="track" cx="17" cy="17" r="14"/><circle class="bar" id="ring-bar" cx="17" cy="17" r="14"/></svg><b id="ring-num">30</b></span>
           <span id="ring-text">Take your time to read the text.</span>
         </span>
         <button type="button" class="btn primary" id="b-read" disabled>Continue</button>
@@ -439,7 +439,8 @@
   var FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSerKLy6ZaLjmcTUmtXPrGBKJqx2l4PyRA3snx2tq2rwfGFUkA/formResponse';
   var FORM_FIELD = 'entry.797820977';
   var ZXCVBN_VERSION = '4.4.2';
-  var READ_SECONDS = 60;
+  // 30 seconds since 10.11.2026 (participant feedback); answers before that change were collected with 60 seconds.
+  var READ_SECONDS = 30;
   var RING_LENGTH = 87.96;
 
   var GUIDELINE = 'Create a new password only for this fictional account. Do not use a password that you use anywhere else. ' +

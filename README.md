@@ -10,7 +10,7 @@ A short online experiment for the course Applied Research Methodology at Vilniau
 
 1. The participant reads the information and gives consent.
 2. Task 1: a new password for a fictional study room booking portal.
-3. The page shows either a short password guideline (group G) or a neutral text (group C) for 60 seconds. The group is chosen at random.
+3. The page shows either a short password guideline (group G) or a neutral text (group C) for 30 seconds (60 seconds before 10 November 2026). The group is chosen at random.
 4. Task 2: a new password for a fictional e-book library service.
 5. Two background questions: earlier password training and the device used.
 
